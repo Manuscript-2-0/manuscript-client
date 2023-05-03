@@ -52,16 +52,19 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, inject, onMounted, ref } from 'vue'
 import UiInput from '@/components/ui/UiInput.vue'
 import { AuthService } from '@/services/auth'
 import { useRouter } from 'vue-router'
+import { INotificationPlugin } from '@/utils/plugins/toast'
 
 export default defineComponent({
 	name: 'AuthPage',
 	components: { UiInput },
 	setup() {
 		const router = useRouter()
+
+		const toast = inject('$notification') as INotificationPlugin
 
 		const email = ref('')
 		const password = ref('')
@@ -70,9 +73,11 @@ export default defineComponent({
 			try {
 				await AuthService.loginUser(email.value, password.value)
 
+				toast.success('Вы успешно вошли в систему')
+
 				router.push({ name: 'Events' })
 			} catch (e) {
-				console.log(e)
+				toast.error('Неверный логин или пароль')
 			}
 		}
 

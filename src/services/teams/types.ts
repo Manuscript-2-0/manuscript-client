@@ -8,19 +8,39 @@ export interface IState {
 
 export interface ITeamsService {
 	state: IState
-	fetchTeams: () => Promise<Team[]>
+	fetchTeams: (eventId?: string) => Promise<Team[]>
 	fetchTeamById: (id: number) => Promise<Team>
-	editTeamById: (team: ITeamCreatePayload) => Promise<Team>
+	editTeamById: (team: Team) => Promise<Team>
 	deleteTeamById: (id: number) => Promise<void>
 	createTeam: (team: ITeamCreatePayload, eventId: number) => Promise<Team>
+	joinTeam: (teamId: number) => Promise<ITeamMemberStatusResponse>
+	leaveTeam: (teamId: number) => Promise<ITeamMemberStatusResponse>
+	deleteTeamMember: (
+		teamId: number,
+		userId: number
+	) => Promise<ITeamMemberStatusResponse>
+	changeMemberStatus: (
+		teamId: number,
+		userId: number,
+		status: EMembershipStatus
+	) => Promise<ITeamMemberStatusResponse>
+	getTeamLeader: (team: Team) => IUser | undefined
+	isLeader: () => Promise<boolean>
+	getPendingRequests: (teamId: number) => Promise<ITeamMemberStatusResponse[]>
+	acceptMember: (
+		teamId: number,
+		userId: number
+	) => Promise<ITeamMemberStatusResponse>
+	declineMember: (
+		teamId: number,
+		userId: number
+	) => Promise<ITeamMemberStatusResponse>
 }
 
 export interface ITeamCreatePayload {
 	id?: number
 	name: string
 	image: string
-	location: string
-	location_url: string
 }
 
 export enum EMembershipStatus {

@@ -1,15 +1,16 @@
-import { Event, IEventCreatePayload } from '@/types'
+import { IEvent, IEventCreatePayload } from '@/types'
 
 export interface IState {
-	events: Event[] | null
-	event: Event | null
+	events: IEvent[] | null
+	event: IEvent | null
 }
 
 export interface IEventsService {
 	state: IState
-	fetchEvents: () => Promise<Event[]>
-	fetchEventById: (id: number) => Promise<Event>
-	createEvent: (event: IEventCreatePayload) => Promise<Event>
-	editEventById: (event: Event) => Promise<Event>
+	fetchEvents: () => Promise<IEvent[]>
+	fetchEventById: (id: number) => Promise<IEvent>
+	createEvent: (event: IEventCreatePayload) => Promise<IEvent>
+	editEventById: (event: IEvent, id: number) => Promise<IEvent>
 	deleteEventById: (id: number) => Promise<void>
+	isOwner: (eventId: number) => Promise<boolean>
 }

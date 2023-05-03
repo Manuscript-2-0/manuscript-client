@@ -1,10 +1,10 @@
 import { client } from '../../client'
 import { ITeamMemberStatusResponse } from '@/services/teams/types'
 
-export default function (teamId: number): Promise<ITeamMemberStatusResponse> {
+export default function (teamId: number): Promise<ITeamMemberStatusResponse[]> {
 	return client
-		.delete(`/teams/${teamId}/participants`)
-		.then(res => res.data)
+		.get(`/teams/${teamId}/participants`)
+		.then(res => res.data.data)
 		.catch(err => {
 			throw err
 		})

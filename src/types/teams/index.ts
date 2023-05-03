@@ -1,6 +1,7 @@
 import { EMembershipStatus } from '@/services/teams/types'
+import { IUser } from '..'
 
-interface Event {
+interface IEvent {
 	id: number
 	title: string
 	description: string
@@ -12,8 +13,8 @@ interface Event {
 export interface Team {
 	id: number
 	team_name: string
-	members: Member[]
-	event: Event
+	participants: IMember[]
+	event: IEvent
 
 	name: string
 	image: string
@@ -23,8 +24,10 @@ export interface Team {
 	user_participation_status: EMembershipStatus
 }
 
-export interface Member {
+export interface IMember {
 	id: number
-	name: string
-	email: string
+	role: 'MEMBER' | 'LEADER'
+	status: EMembershipStatus
+	user: IUser
+	team: Team
 }

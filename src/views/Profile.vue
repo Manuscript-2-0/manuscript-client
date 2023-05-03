@@ -80,12 +80,17 @@ import UiActionBlock from '@/components/ui/UiActionBlock.vue'
 import UiLoader from '@/components/ui/UiLoader.vue'
 import { AuthService } from '@/services/auth'
 import { UserService } from '@/services/user'
-import { computed, defineComponent, onMounted } from 'vue'
+import { INotificationPlugin } from '@/utils/plugins/toast'
+import { computed, defineComponent, inject, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
 	name: 'Profile',
 	components: { UiLoader, UiActionBlock },
 	setup() {
+		const router = useRouter()
+		const toast = inject('$notification') as INotificationPlugin
+
 		const profile = computed(() => UserService.state.profile)
 
 		const fetchProfile = async () => {
@@ -97,6 +102,13 @@ export default defineComponent({
 			navigator.clipboard.writeText(link)
 		}
 
+		const logout = async () => {
+			AuthService.logout()
+			toast.success('Вы успешно вышли из аккаунта')
+
+			router.push({ name: 'Login' })
+		}
+
 		onMounted(() => {
 			fetchProfile()
 		})
@@ -104,7 +116,7 @@ export default defineComponent({
 		return {
 			profile,
 			copyInviteLink,
-			logout: AuthService.logout
+			logout
 		}
 	}
 })

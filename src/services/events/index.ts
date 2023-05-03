@@ -7,7 +7,9 @@ import {
 	createEvent as _createEvent
 } from '../api/requests/events'
 import { IState, IEventsService } from './types'
-import { Event, IEventCreatePayload } from '@/types'
+import { IEvent, IEventCreatePayload } from '@/types'
+import { UserService } from '../user'
+import { AuthService } from '../auth'
 
 const state = reactive<IState>({
 	events: null,
@@ -24,20 +26,43 @@ const deleteEventById = async (id: number) => {
 	return await deleteEvent(id)
 }
 
-const editEventById = async (event: Event) => {
-	return await editEvent(event)
+const editEventById = async (event: IEvent, id: number) => {
+	return await editEvent(
+		{
+			name: event.name,
+			location: event.location,
+			location_url: event.location_url,
+			description: event.description,
+			full_description: event.full_description,
+			start_date: event.start_date,
+			end_date: event.end_date,
+			tags: event.tags.join(','),
+			image: event.image
+		},
+		id
+	)
 }
 
 const fetchEventById = async (id: number) => {
-	return await getEvent(id)
+	const res = await getEvent(id)
+	console.log(res)
+	state.event = res
+	return res
 }
 
 const createEvent = async (event: IEventCreatePayload) => {
-	return await _createEvent({
-		...event,
-		start_date: '2021-01-01',
-		end_date: '2021-01-01'
-	})
+	return await _createEvent(event)
+}
+
+const isOwner = async (eventId: number) => {
+	if (!AuthService.isAuthorized()) return false
+
+	if (UserService.state.profile) {
+		return UserService.state.profile.id === eventId
+	}
+
+	const user = await UserService.fetchProfile()
+	return user.id === eventId
 }
 
 const EventsService: IEventsService = {
@@ -46,7 +71,8 @@ const EventsService: IEventsService = {
 	fetchEventById,
 	editEventById,
 	deleteEventById,
-	createEvent
+	createEvent,
+	isOwner
 }
 
 export { EventsService }

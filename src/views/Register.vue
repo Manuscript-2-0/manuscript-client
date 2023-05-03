@@ -99,12 +99,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, inject, onMounted, ref } from 'vue'
 import UiInput from '@/components/ui/UiInput.vue'
 import { AuthService } from '@/services/auth'
 import { useRouter } from 'vue-router'
 import { ISignupPayload } from '@/types'
 import UiTextarea from '@/components/ui/UiTextarea.vue'
+import { INotificationPlugin } from '@/utils/plugins/toast'
 
 export default defineComponent({
 	name: 'AuthPage',
@@ -121,13 +122,15 @@ export default defineComponent({
 			description: ''
 		})
 
+		const toast = inject('$notification') as INotificationPlugin
+
 		const onSubmit = async () => {
 			try {
 				await AuthService.signupUser(user.value)
-
+				toast.success('Вы успешно зарегистрировались')
 				router.push({ name: 'Profile' })
-			} catch (e) {
-				console.log(e)
+			} catch (error) {
+				toast.error('Произошла ошибка')
 			}
 		}
 

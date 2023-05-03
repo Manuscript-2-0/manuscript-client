@@ -42,24 +42,6 @@
 					class="flex flex-col items-center justify-between w-full space-y-4 md:space-y-0 md:space-x-4 md:flex-row mt-4"
 				>
 					<UiInput
-						v-model="event.start_date"
-						title="Дата начала"
-						type="date"
-						placeholder="Введите дату начала"
-					/>
-
-					<UiInput
-						v-model="event.end_date"
-						title="Дата окончания"
-						type="date"
-						placeholder="Введите дату окончания"
-					/>
-				</div>
-
-				<div
-					class="flex flex-col items-center justify-between w-full space-y-4 md:space-y-0 md:space-x-4 md:flex-row mt-4"
-				>
-					<UiInput
 						v-model="event.location_url"
 						title="Ссылка на место проведения"
 						type="text"
@@ -73,11 +55,54 @@
 					/>
 				</div>
 
+				<div class="w-full mt-4">
+					<UiTextarea
+						v-model="event.full_description"
+						placeholder="Введите полное описание"
+					/>
+				</div>
+
+				<div
+					class="flex flex-col items-center w-full space-y-4 md:space-y-0 md:space-x-4 md:flex-row mt-4 bg-gray-100 p-4 rounded-lg"
+				>
+					<div class="flex flex-col w-full">
+						<label for="start_date"> Дата начала </label>
+						<Calendar
+							id="start_date"
+							v-model="event.start_date"
+							class="mt-2"
+							show-icon
+						/>
+					</div>
+
+					<div class="flex flex-col w-full">
+						<label for="end_date"> Дата окончания </label>
+						<Calendar
+							id="end_date"
+							v-model="event.end_date"
+							class="mt-2"
+							show-icon
+						/>
+					</div>
+				</div>
+
+				<div
+					class="bg-gray-100 w-full space-y-4 md:space-y-0 md:space-x-4 md:flex-row mt-4 p-4 rounded-lg"
+				>
+					<BaseFileUploader
+						id="image"
+						accept="image/*"
+						class="mt-2"
+						@select="onImageSelect"
+					/>
+				</div>
+
 				<div class="mt-10">
 					<button
-						class="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded"
+						class="bg-gray-700 hover:bg-black text-white font-bold py-4 px-6 rounded text-xl"
 					>
-						Создать
+						<template v-if="!isEdit"> Создать </template>
+						<template v-else> Сохранить </template>
 					</button>
 				</div>
 			</div>
@@ -88,52 +113,66 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { defineComponent, inject, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import UiInput from '@/components/ui/UiInput.vue'
 import { EventsService } from '@/services/events'
-import { Event, IEventCreatePayload } from '@/types'
+import { IEvent, IEventCreatePayload } from '@/types'
+import Calendar from 'primevue/calendar'
 import UiLoader from '@/components/ui/UiLoader.vue'
+import { INotificationPlugin } from '@/utils/plugins/toast'
+import UiTextarea from '@/components/ui/UiTextarea.vue'
+import BaseFileUploader from '@/components/base/BaseFileUploader.vue'
 
 export default defineComponent({
 	name: 'EventCreate',
-	components: { UiInput, UiLoader },
+	components: { UiInput, UiLoader, Calendar, UiTextarea, BaseFileUploader },
 	setup() {
 		const route = useRoute()
-		const teamId = +route.params.teamId || 0
-		const eventId = +route.params.eventId || 0
+		const router = useRouter()
+		const eventId = +route.params.id
 		const isLoading = ref(false)
 
 		const newEvent = ref<IEventCreatePayload>({
 			name: '',
-			image: null,
+			image: '',
 			location: '',
 			location_url: '',
 			description: '',
 			start_date: '',
 			end_date: '',
 			full_description: '',
-			tags: []
+			tags: ''
 		})
 
-		const event = ref<Event | null>(null)
+		const event = ref<IEvent | null>(null)
+
+		const notification = inject('$notification') as INotificationPlugin
 
 		const fetchEventById = async (id: number) => {
 			event.value = await EventsService.fetchEventById(id)
 		}
 
+		const onImageSelect = (file: File) => {
+			newEvent.value.image = file as any
+		}
+
 		const onSubmit = async () => {
 			if (eventId && event.value) {
 				try {
-					await EventsService.editEventById(event.value)
+					await EventsService.editEventById(event.value, +eventId)
+					notification.success('Мероприятие успешно обновлено')
+					router.push('/events')
 				} catch (e) {
-					console.log('Не удалось обновить команду')
+					notification.error('Не удалось обновить мероприятие')
 				}
 			} else {
 				try {
 					await EventsService.createEvent(newEvent.value)
+					notification.success('Мероприятие успешно создано')
+					router.push('/events')
 				} catch (e) {
-					console.log('Не удалось создать команду')
+					notification.error('Не удалось создать мероприятие')
 				}
 			}
 		}
@@ -142,7 +181,7 @@ export default defineComponent({
 			if (eventId) {
 				try {
 					isLoading.value = true
-					await fetchEventById(teamId)
+					await fetchEventById(eventId)
 				} finally {
 					isLoading.value = false
 				}
@@ -150,10 +189,11 @@ export default defineComponent({
 		})
 
 		return {
-			event: eventId ? event.value : newEvent.value,
+			event: eventId ? event : newEvent,
 			onSubmit,
 			isLoading,
-			isEdit: !!teamId
+			isEdit: !!eventId,
+			onImageSelect
 		}
 	}
 })

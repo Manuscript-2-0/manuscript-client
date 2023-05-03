@@ -82,14 +82,6 @@ export default defineComponent({
 				onClick: () => changeRoute('Events')
 			},
 			{
-				name: 'Teams',
-				text: 'Команды',
-				show: true,
-				icon: TeamIcon,
-				isActive: () => areRoutesActive(['Teams']),
-				onClick: () => changeRoute('Teams')
-			},
-			{
 				name: 'Notifications',
 				text: 'Уведомления',
 				show: AuthService.isAuthorized(),

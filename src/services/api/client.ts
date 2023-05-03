@@ -2,12 +2,10 @@ import axios from 'axios'
 import { AuthService } from '../auth'
 
 const client = axios.create({
-	baseURL: import.meta.env.VITE_API_PROXY,
-	transformRequest: [data => JSON.stringify(data)]
+	baseURL: import.meta.env.VITE_API_PROXY
 })
 
 client.interceptors.request.use(config => {
-	config.headers['Content-Type'] = 'application/json'
 	config.headers['Accept'] = 'application/json'
 
 	if (AuthService.isAuthorized()) {

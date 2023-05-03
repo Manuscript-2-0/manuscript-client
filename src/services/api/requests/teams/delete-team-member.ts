@@ -6,7 +6,7 @@ export default function (
 	userId: number
 ): Promise<ITeamMemberStatusResponse> {
 	return client
-		.delete(`/teams/${teamId}/kick/${userId}/`)
+		.delete(`/teams/${teamId}/participants/${userId}`)
 		.then(res => res.data)
 		.catch(err => {
 			throw err

@@ -16,7 +16,10 @@
 				</p>
 			</div>
 
-			<div class="flex flex-col justify-center items-center w-full py-4">
+			<div
+				v-if="team"
+				class="flex flex-col justify-center items-center w-full py-4"
+			>
 				<div
 					class="flex flex-col items-center justify-between w-full space-y-4 md:space-y-0 md:space-x-4 md:flex-row"
 				>
@@ -35,74 +38,72 @@
 					/>
 				</div>
 
-				<div
-					class="flex flex-col items-center justify-between w-full space-y-4 mt-4 md:space-y-0 md:space-x-4 md:flex-row"
-				>
-					<UiInput
-						v-model="team.location"
-						title="Местоположение"
-						type="text"
-						placeholder="Введите местоположение"
-					/>
-
-					<UiInput
-						v-model="team.location_url"
-						title="Ссылка на место проведения"
-						type="text"
-						placeholder="Введите ссылку на место проведения"
-					/>
-				</div>
-
 				<div class="mt-10">
 					<button
 						class="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded"
 					>
-						Создать
+						<template v-if="!isEdit"> Создать команду </template>
+						<template v-else> Сохранить </template>
 					</button>
 				</div>
+			</div>
+
+			<div v-else class="py-10">
+				<UiLoader />
 			</div>
 		</div>
 	</form>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { defineComponent, inject, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ITeamCreatePayload } from '@/services/teams/types'
 import { TeamsService } from '@/services/teams'
 import UiInput from '@/components/ui/UiInput.vue'
+import { INotificationPlugin } from '@/utils/plugins/toast'
+import { Team } from '@/types'
+import UiLoader from '@/components/ui/UiLoader.vue'
 
 export default defineComponent({
 	name: 'TeamCreate',
-	components: { UiInput },
+	components: { UiInput, UiLoader },
 	setup() {
 		const route = useRoute()
-		const teamId = +route.params.id || null
+		const router = useRouter()
+		const teamId = +route.params.id || 0
 		const eventId = +route.params.eventId || 0
 
 		const team = ref<ITeamCreatePayload>({
 			name: '',
-			image: '',
-			location: '',
-			location_url: ''
+			image: ''
 		})
 
+		const teamEdit = ref<Team | null>(null)
+
+		const notification = inject('$notification') as INotificationPlugin
+
 		const fetchTeam = async (id: number) => {
-			team.value = await TeamsService.fetchTeamById(id)
+			teamEdit.value = await TeamsService.fetchTeamById(id)
 		}
 
 		const onSubmit = async () => {
-			if (teamId) {
+			if (teamId && teamEdit.value) {
 				try {
-					await TeamsService.editTeamById(team.value)
+					await TeamsService.editTeamById(teamEdit.value)
+					notification.success('Команда успешно обновлена')
+					router.push('/teams/' + teamId)
 				} catch (e) {
-					console.log('Не удалось обновить команду')
+					notification.error('Не удалось обновить команду')
 				}
 			} else {
 				try {
 					await TeamsService.createTeam(team.value, eventId)
+					notification.success('Команда успешно создана')
+					router.push('/events/' + eventId)
+					router
 				} catch (e) {
-					console.log('Не удалось создать команду')
+					notification.error('Не удалось создать команду')
 				}
 			}
 		}
@@ -114,7 +115,7 @@ export default defineComponent({
 		})
 
 		return {
-			team,
+			team: teamId ? teamEdit : team,
 			onSubmit,
 			isEdit: !!teamId
 		}

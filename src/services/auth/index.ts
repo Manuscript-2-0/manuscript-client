@@ -25,8 +25,6 @@ const getToken = () => {
 const logout = () => {
 	state.token = ''
 	storage.removeItem(KEYS.ACCESS_TOKEN)
-
-	window.location.reload()
 }
 
 const loginUser = async (email: string, password: string) => {

@@ -20,7 +20,7 @@
 		</UiActionBlock>
 
 		<!-- Список команд -->
-		<section>
+		<section class="bg-gray-100">
 			<div class="flex flex-wrap justify-center">
 				<div v-for="team in teams" :key="team.id" class="w-1/4 p-4">
 					<TeamCard :team="team" />

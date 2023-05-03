@@ -23,6 +23,12 @@ export default [
 		component: () => import('../views/EventCreate.vue')
 	},
 	{
+		path: '/events/edit/:id',
+		name: 'EventEdit',
+		meta: { middleware: auth },
+		component: () => import('../views/EventCreate.vue')
+	},
+	{
 		path: '/teams',
 		name: 'Teams',
 		component: () => import('../views/Teams.vue')
@@ -33,8 +39,14 @@ export default [
 		component: () => import('../views/TeamDetails.vue')
 	},
 	{
-		path: '/teams/create',
+		path: '/teams/create/:eventId',
 		name: 'TeamCreate',
+		meta: { middleware: auth },
+		component: () => import('../views/TeamCreate.vue')
+	},
+	{
+		path: '/teams/edit/:id',
+		name: 'TeamEdit',
 		meta: { middleware: auth },
 		component: () => import('../views/TeamCreate.vue')
 	},
