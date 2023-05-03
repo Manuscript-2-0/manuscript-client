@@ -45,7 +45,6 @@ const editEventById = async (event: IEvent, id: number) => {
 
 const fetchEventById = async (id: number) => {
 	const res = await getEvent(id)
-	console.log(res)
 	state.event = res
 	return res
 }
