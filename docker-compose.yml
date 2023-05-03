@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    restart: always
+    volumes:
+      - .:/usr/src/app
+    # command: sh -c "yarn install && yarn build && yarn run dev"
+
+  nginx-proxy:
+    build: ./proxy
+    container_name: nginx-proxy
+    depends_on:
+      - app
+    ports:
+      - '80:80'
+      - '443:443'
