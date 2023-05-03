@@ -43,12 +43,7 @@
 				class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-200"
 				@click="clearInput"
 			>
-				<img
-					src="@/assets/icons/cross-grey.svg"
-					alt=""
-					width="24"
-					height="24"
-				/>
+				<img src="@/assets/icons/cross.svg" alt="" width="24" height="24" />
 			</button>
 		</div>
 
