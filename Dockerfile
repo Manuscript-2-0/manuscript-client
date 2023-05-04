@@ -4,12 +4,12 @@ WORKDIR /usr/src/app
 
 COPY package.json ./
 
-RUN yarn install
+# RUN yarn install
 
 COPY . .
 
-EXPOSE 8080
+# EXPOSE 8080
 
-RUN yarn build
+# RUN yarn build
 
-CMD [ "yarn", "run", "dev" ]
+# CMD [ "yarn", "run", "dev" ]

@@ -10,7 +10,7 @@ services:
     restart: always
     volumes:
       - .:/usr/src/app
-    # command: sh -c "yarn install && yarn build && yarn run dev"
+    command: sh -c "yarn install && yarn build && yarn run dev"
 
   nginx-proxy:
     build: ./proxy
