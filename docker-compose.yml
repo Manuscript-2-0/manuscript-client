@@ -10,6 +10,8 @@ services:
     restart: always
     volumes:
       - .:/usr/src/app
+    environment:
+      - VITE_API_PROXY=http://64.226.81.189
     command: sh -c "yarn install && yarn build && yarn run dev"
 
   nginx-proxy:
