@@ -4,7 +4,7 @@ import routes from './routes'
 const router = createRouter({
 	history: createWebHashHistory(),
 	routes,
-	scrollBehavior(to, from, savedPosition) {
+	scrollBehavior(_to, _from, savedPosition) {
 		if (savedPosition) {
 			return savedPosition
 		} else {
