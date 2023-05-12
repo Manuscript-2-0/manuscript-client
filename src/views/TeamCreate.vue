@@ -101,7 +101,6 @@ export default defineComponent({
 					await TeamsService.createTeam(team.value, eventId)
 					notification.success('Команда успешно создана')
 					router.push('/events/' + eventId)
-					router
 				} catch (e) {
 					notification.error('Не удалось создать команду')
 				}

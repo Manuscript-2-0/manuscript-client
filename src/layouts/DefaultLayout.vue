@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class="pb-20">
 		<BaseNavigation />
 		<slot></slot>
 	</div>

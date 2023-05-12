@@ -66,6 +66,11 @@
 							Вы были исключены из команды
 						</p>
 					</div>
+					<div v-else-if="team.user_participation_status && !isLeaderOfTeam">
+						<p class="text-gray-600 text-center mt-2">
+							{{ formatStatusText(team.user_participation_status) }}
+						</p>
+					</div>
 				</div>
 			</div>
 			<div
@@ -98,16 +103,17 @@
 import { computed, defineComponent, inject, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import UiLoader from '@/components/ui/UiLoader.vue'
+import UiActionBlock from '@/components/ui/UiActionBlock.vue'
+import TeamMember from '@/components/teams/TeamMember.vue'
 import { TeamsService } from '@/services/teams'
 import {
 	EMembershipStatus,
 	ITeamMemberStatusResponse
 } from '@/services/teams/types'
-import TeamMember from '@/components/teams/TeamMember.vue'
 import { UserService } from '@/services/user'
-import { INotificationPlugin } from '@/utils/plugins/toast'
 import { AuthService } from '@/services/auth'
-import UiActionBlock from '@/components/ui/UiActionBlock.vue'
+import { INotificationPlugin } from '@/utils/plugins/toast'
+import { formatStatusText } from '@/utils/helpers'
 
 export default defineComponent({
 	name: 'TeamDetails',
@@ -129,6 +135,8 @@ export default defineComponent({
 		const deleteMember = async (memberId: number) => {
 			try {
 				await TeamsService.deleteTeamMember(+teamId, memberId)
+				await TeamsService.fetchTeamById(+teamId)
+				notification.success('Участник успешно принят')
 			} catch (e) {
 				notification.error('Не удалось удалить участника')
 			}
@@ -138,6 +146,7 @@ export default defineComponent({
 			try {
 				await TeamsService.acceptMember(+teamId, memberId)
 				requestToJoinTeam.value = await TeamsService.getPendingRequests(+teamId)
+				notification.success('Участник успешно принят')
 			} catch (e) {
 				notification.error('Не удалось принять участника')
 			}
@@ -147,6 +156,7 @@ export default defineComponent({
 			try {
 				await TeamsService.declineMember(+teamId, memberId)
 				requestToJoinTeam.value = await TeamsService.getPendingRequests(+teamId)
+				notification.success('Участник успешно отклонен')
 			} catch (e) {
 				notification.error('Не удалось отклонить участника')
 			}
@@ -192,6 +202,7 @@ export default defineComponent({
 			goToEditTeam,
 			deleteTeam,
 			EMembershipStatus,
+			formatStatusText,
 			isAuth: () => AuthService.isAuthorized(),
 			leaveTeam: () => TeamsService.leaveTeam(+teamId),
 			joinTeam: () => TeamsService.joinTeam(+teamId)

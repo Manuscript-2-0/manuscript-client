@@ -1,9 +1,16 @@
-import { createWebHistory, createRouter } from 'vue-router'
+import { createWebHashHistory, createRouter } from 'vue-router'
 import routes from './routes'
 
 const router = createRouter({
-	history: createWebHistory(),
-	routes
+	history: createWebHashHistory(),
+	routes,
+	scrollBehavior(to, from, savedPosition) {
+		if (savedPosition) {
+			return savedPosition
+		} else {
+			return { top: 0 }
+		}
+	}
 })
 
 interface IMiddlewareContext {

@@ -56,7 +56,7 @@ const createEvent = async (event: IEventCreatePayload) => {
 const isOwner = async (eventId: number) => {
 	if (!AuthService.isAuthorized()) return false
 
-	if (UserService.state.profile) {
+	if (UserService.state.profile !== null) {
 		return UserService.state.profile.id === eventId
 	}
 

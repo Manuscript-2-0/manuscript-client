@@ -1,6 +1,6 @@
 <template>
 	<div
-		class="fixed z-9999 top-0 right-0 bottom-0 flex flex-col p-4 font-sirius pointer-events-none"
+		class="fixed z-50 top-0 right-0 bottom-0 flex flex-col p-4 font-sirius pointer-events-none"
 	>
 		<TransitionGroup :name="transition">
 			<div

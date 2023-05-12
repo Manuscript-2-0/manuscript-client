@@ -1,7 +1,7 @@
 <template>
 	<div class="pt-20">
 		<nav
-			class="navigation fixed z-100 left-10 right-10 top-4 px-4 py-2 rounded-lg"
+			class="navigation fixed left-10 right-10 top-4 px-4 py-2 rounded-lg z-40"
 			:class="{}"
 		>
 			<ul class="flex justify-between items-center h-12.5">
