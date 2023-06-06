@@ -7,7 +7,7 @@
 						<router-link
 							v-if="!isOwner"
 							:to="`/teams/create/${eventId}`"
-							class="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded w-full"
+							class="bg-black text-white font-bold py-3 px-4 rounded-lg w-full"
 						>
 							Создать тут команду
 						</router-link>
@@ -15,14 +15,14 @@
 						<router-link
 							v-if="isOwner"
 							:to="`/events/edit/${eventId}`"
-							class="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded w-full"
+							class="bg-black text-white font-bold py-3 px-4 rounded-lg w-full"
 						>
 							Редактировать
 						</router-link>
 
 						<button
 							v-if="isOwner"
-							class="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded w-full mt-2"
+							class="bg-black text-white font-bold py-3 px-4 rounded-lg w-full mt-2"
 							@click="deleteEvent"
 						>
 							Удалить

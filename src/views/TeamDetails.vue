@@ -5,14 +5,14 @@
 				<template #action>
 					<div v-if="isLeaderOfTeam">
 						<button
-							class="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded w-full"
+							class="bg-black text-white font-bold py-3 px-4 rounded-lg w-full"
 							@click="goToEditTeam"
 						>
 							Редактировать команду
 						</button>
 
 						<button
-							class="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded w-full mt-2"
+							class="bg-black text-white font-bold py-3 px-4 rounded-lg w-full mt-2"
 							@click="deleteTeam"
 						>
 							Удалить команду

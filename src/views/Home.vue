@@ -22,7 +22,7 @@
 
 				<div class="mt-10">
 					<button
-						class="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded"
+						class="bg-black text-white text-lg font-medium py-2 px-4 rounded-lg"
 					>
 						Начать
 					</button>

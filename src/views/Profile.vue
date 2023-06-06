@@ -11,7 +11,7 @@
 
 			<template #action>
 				<button
-					class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+					class="bg-black text-white font-bold py-3 px-4 rounded-lg"
 					@click="copyInviteLink"
 				>
 					Пригласить друга
@@ -45,7 +45,7 @@
 					<!-- Кнопка выхода -->
 					<div class="flex justify-center mt-8">
 						<button
-							class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+							class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg"
 							@click="logout"
 						>
 							Выйти

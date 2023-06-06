@@ -99,7 +99,7 @@
 
 				<div class="mt-10">
 					<button
-						class="bg-gray-700 hover:bg-black text-white font-bold py-4 px-6 rounded text-xl"
+						class="bg-black text-white font-bold py-3 px-6 rounded-lg text-xl"
 					>
 						<template v-if="!isEdit"> Создать </template>
 						<template v-else> Сохранить </template>

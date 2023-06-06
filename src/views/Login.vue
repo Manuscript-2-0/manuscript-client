@@ -1,9 +1,7 @@
 <template>
 	<div class="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
 		<div class="mx-auto max-w-lg">
-			<h1 class="text-center text-2xl font-bold text-blue-600 sm:text-3xl">
-				Вход в систему
-			</h1>
+			<h1 class="text-center text-2xl font-bold sm:text-3xl">Вход в систему</h1>
 
 			<p class="mx-auto max-w-md text-center text-gray-500 mt-4">
 				Если у вас уже есть аккаунт, то вы можете войти в систему
@@ -35,7 +33,7 @@
 
 				<button
 					type="submit"
-					class="block w-full rounded-lg bg-blue-600 px-5 py-3 text-sm font-medium text-white"
+					class="block w-full rounded-lg bg-black px-5 py-3 text-sm font-medium text-white"
 				>
 					Войти
 				</button>

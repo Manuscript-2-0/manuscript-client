@@ -39,9 +39,7 @@
 				</div>
 
 				<div class="mt-10">
-					<button
-						class="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded"
-					>
+					<button class="bg-black text-white font-bold py-3 px-4 rounded-lg">
 						<template v-if="!isEdit"> Создать команду </template>
 						<template v-else> Сохранить </template>
 					</button>

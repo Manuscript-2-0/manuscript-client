@@ -30,7 +30,7 @@
 								<template v-if="item.icon">
 									<component :is="item.icon" />
 								</template>
-								<span>{{ item.text }}</span>
+								<span class="font-medium">{{ item.text }}</span>
 							</a>
 						</li>
 					</template>
@@ -138,8 +138,12 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .navigation {
+	background: rgba(255, 255, 255, 0.5);
+	backdrop-filter: blur(10px);
+
 	&__active-link {
 		color: #000000;
+
 		svg path {
 			stroke: #000000;
 		}
