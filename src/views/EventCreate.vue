@@ -1,5 +1,5 @@
 <template>
-	<form class="px-10" @submit.prevent="onSubmit">
+	<form class="px-10" novalidate @submit.prevent="onSubmit">
 		<div class="flex flex-col justify-center items-center px-4 py-2">
 			<div class="flex flex-col justify-center items-center">
 				<h1 v-if="!isEdit" class="text-3xl font-bold text-gray-800">
@@ -28,13 +28,15 @@
 						title="Название"
 						type="text"
 						placeholder="Введите название мероприятия"
+						required
 					/>
 
 					<UiInput
 						v-model="event.location"
 						title="Место проведения"
 						type="text"
-						placeholder="Ссылку или адрес"
+						placeholder="Адрес места проведения"
+						required
 					/>
 				</div>
 
@@ -46,12 +48,19 @@
 						title="Ссылка на место проведения"
 						type="text"
 						placeholder="Введите ссылку на место проведения"
-					/>
+						:has-error="!isLinkValid && isFormSubmitted"
+					>
+						<template v-if="!isLinkValid" #error>
+							<div>Неверный формат ссылки</div>
+						</template>
+					</UiInput>
 					<UiInput
 						v-model="event.description"
 						title="Краткое описание"
 						type="text"
+						maxlength="100"
 						placeholder="Введите краткое описание"
+						required
 					/>
 				</div>
 
@@ -72,6 +81,7 @@
 							v-model="event.start_date"
 							class="mt-2"
 							show-icon
+							required
 						/>
 					</div>
 
@@ -82,6 +92,7 @@
 							v-model="event.end_date"
 							class="mt-2"
 							show-icon
+							required
 						/>
 					</div>
 				</div>
@@ -113,7 +124,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref } from 'vue'
+import { defineComponent, inject, onMounted, ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import UiInput from '@/components/ui/UiInput.vue'
 import { EventsService } from '@/services/events'
@@ -123,6 +134,7 @@ import UiLoader from '@/components/ui/UiLoader.vue'
 import { INotificationPlugin } from '@/utils/plugins/toast'
 import UiTextarea from '@/components/ui/UiTextarea.vue'
 import BaseFileUploader from '@/components/base/BaseFileUploader.vue'
+import { useFormValidator } from '@/utils/composables'
 
 export default defineComponent({
 	name: 'EventCreate',
@@ -130,8 +142,10 @@ export default defineComponent({
 	setup() {
 		const route = useRoute()
 		const router = useRouter()
+		const { isLinkValid } = useFormValidator()
 		const eventId = +route.params.id
 		const isLoading = ref(false)
+		const isFormSubmitted = ref(false)
 
 		const newEvent = ref<IEventCreatePayload>({
 			name: '',
@@ -157,7 +171,26 @@ export default defineComponent({
 			newEvent.value.image = file as any
 		}
 
+		const isFormValid = () => {
+			if (eventId) {
+				const linkValid =
+					newEvent.value.location_url &&
+					isLinkValid(newEvent.value.location_url)
+				return event.value?.start_date && event.value && linkValid
+			}
+
+			const linkValid =
+				newEvent.value.location_url && isLinkValid(newEvent.value.location_url)
+
+			return newEvent.value.start_date && newEvent.value && linkValid
+		}
+
 		const onSubmit = async () => {
+			if (!isFormValid()) {
+				isFormSubmitted.value = true
+				return
+			}
+
 			if (eventId && event.value) {
 				try {
 					await EventsService.editEventById(event.value, +eventId)
@@ -193,7 +226,13 @@ export default defineComponent({
 			onSubmit,
 			isLoading,
 			isEdit: !!eventId,
-			onImageSelect
+			onImageSelect,
+			isFormSubmitted,
+			isLinkValid: computed(() => {
+				return eventId
+					? isLinkValid(event.value?.location_url || '')
+					: isLinkValid(newEvent.value.location_url)
+			})
 		}
 	}
 })

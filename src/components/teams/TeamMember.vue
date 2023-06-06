@@ -26,7 +26,7 @@
 			<template v-if="isRequests">
 				<button
 					class="bg-green-700 hover:bg-black text-white font-bold py-2 px-4 rounded"
-					@click="$emit('accept-member', member.user.id)"
+					@click="$emit('accept-member', member.id)"
 				>
 					Принять
 				</button>

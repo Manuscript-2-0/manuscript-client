@@ -10,7 +10,6 @@
 			<form
 				class="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
 				novalidate
-				@submit.prevent="onSubmit"
 			>
 				<div>
 					<UiInput
@@ -37,8 +36,8 @@
 				</div>
 
 				<button
-					type="submit"
 					class="block w-full rounded-lg bg-black px-5 py-3 text-sm font-medium text-white"
+					@click.prevent="onSubmit"
 				>
 					Войти
 				</button>

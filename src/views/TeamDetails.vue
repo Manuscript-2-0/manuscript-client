@@ -3,7 +3,7 @@
 		<div v-if="!isLoading && team && userId">
 			<UiActionBlock :title="team.name">
 				<template #action>
-					<div v-if="isLeaderOfTeam">
+					<div v-if="isAuth() && isLeaderOfTeam">
 						<button
 							class="bg-black text-white font-bold py-3 px-4 rounded-lg w-full"
 							@click="goToEditTeam"
@@ -17,6 +17,42 @@
 						>
 							Удалить команду
 						</button>
+					</div>
+
+					<div v-else>
+						<button
+							v-if="
+								team.user_participation_status ===
+								EMembershipStatus.APPLIED_STATUS
+							"
+							class="bg-black text-white font-bold py-3 px-4 rounded-lg w-full"
+							@click="leaveTeam"
+						>
+							Покинуть команду
+						</button>
+						<button
+							v-if="!team.user_participation_status"
+							class="bg-black text-white font-bold py-3 px-4 rounded-lg w-full"
+							@click="joinTeam"
+						>
+							Вступить в команду
+						</button>
+
+						<div
+							v-if="
+								team.user_participation_status ===
+								EMembershipStatus.KICKED_STATUS
+							"
+						>
+							<p class="text-red-500 text-center mt-2">
+								Вы были исключены из команды
+							</p>
+						</div>
+						<div v-else-if="team.user_participation_status && !isLeaderOfTeam">
+							<p class="text-gray-600 text-center mt-2">
+								{{ formatStatusText(team.user_participation_status) }}
+							</p>
+						</div>
 					</div>
 				</template>
 			</UiActionBlock>
@@ -33,43 +69,6 @@
 					/>
 					<div v-if="!team.participants.length">
 						<p class="text-gray-600 text-sm">Нет участников</p>
-					</div>
-				</div>
-				<div
-					v-if="isAuth() && !isLeaderOfTeam"
-					class="bg-gray-50 p-4 rounded-lg flex items-center justify-center ml-8 w-max"
-				>
-					<button
-						v-if="
-							team.user_participation_status ===
-							EMembershipStatus.APPLIED_STATUS
-						"
-						class="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded w-full"
-						@click="leaveTeam"
-					>
-						Покинуть команду
-					</button>
-					<button
-						v-if="!team.user_participation_status"
-						class="bg-gray-700 hover:bg-black text-white font-bold py-2 px-4 rounded w-full mt-2"
-						@click="joinTeam"
-					>
-						Вступить в команду
-					</button>
-
-					<div
-						v-if="
-							team.user_participation_status === EMembershipStatus.KICKED_STATUS
-						"
-					>
-						<p class="text-red-500 text-center mt-2">
-							Вы были исключены из команды
-						</p>
-					</div>
-					<div v-else-if="team.user_participation_status && !isLeaderOfTeam">
-						<p class="text-gray-600 text-center mt-2">
-							{{ formatStatusText(team.user_participation_status) }}
-						</p>
 					</div>
 				</div>
 			</div>
@@ -172,6 +171,26 @@ export default defineComponent({
 			}
 		}
 
+		const joinTeam = async () => {
+			try {
+				await TeamsService.joinTeam(+teamId)
+				await TeamsService.fetchTeamById(+teamId)
+				notification.success('Вы успешно вступили в команду')
+			} catch (e) {
+				notification.error('Не удалось вступить в команду')
+			}
+		}
+
+		const leaveTeam = async () => {
+			try {
+				await TeamsService.leaveTeam(+teamId)
+				await TeamsService.fetchTeamById(+teamId)
+				notification.success('Вы успешно покинули команду')
+			} catch (e) {
+				notification.error('Не удалось покинуть команду')
+			}
+		}
+
 		const goToEditTeam = () => {
 			router.push(`/teams/edit/${teamId}`)
 		}
@@ -204,8 +223,8 @@ export default defineComponent({
 			EMembershipStatus,
 			formatStatusText,
 			isAuth: () => AuthService.isAuthorized(),
-			leaveTeam: () => TeamsService.leaveTeam(+teamId),
-			joinTeam: () => TeamsService.joinTeam(+teamId)
+			leaveTeam,
+			joinTeam
 		}
 	}
 })

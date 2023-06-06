@@ -28,9 +28,9 @@
 								@click.prevent="item.onClick()"
 							>
 								<template v-if="item.icon">
-									<component :is="item.icon" />
+									<component :is="item.icon" class="text-black" />
 								</template>
-								<span class="font-medium">{{ item.text }}</span>
+								<span class="font-medium text-black">{{ item.text }}</span>
 							</a>
 						</li>
 					</template>
@@ -43,7 +43,7 @@
 <script lang="ts">
 import { defineComponent, Component, onMounted, onUnmounted } from 'vue'
 import { RouteRecordName, useRoute, useRouter } from 'vue-router'
-import { EventsIcon, NotificationsIcon, TeamIcon } from './icons'
+import { EventsIcon, FAQIcon, NotificationsIcon, TeamIcon } from './icons'
 import ProfileIcon from './icons/ProfileIcon.vue'
 import { AuthService } from '@/services/auth'
 
@@ -88,6 +88,14 @@ export default defineComponent({
 				icon: NotificationsIcon,
 				isActive: () => areRoutesActive(['Notifications']),
 				onClick: () => changeRoute('Notifications')
+			},
+			{
+				name: 'FAQ',
+				text: 'FAQ',
+				show: true,
+				icon: FAQIcon,
+				isActive: () => areRoutesActive(['FAQ']),
+				onClick: () => changeRoute('FAQ')
 			},
 			{
 				name: 'Profile',

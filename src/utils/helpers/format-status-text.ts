@@ -3,7 +3,7 @@ import { EMembershipStatus } from '@/services/teams/types'
 export default function (status: EMembershipStatus): string {
 	switch (status) {
 		case EMembershipStatus.APPLIED_STATUS:
-			return 'Вы подали заявку'
+			return 'Вы в команде'
 		case EMembershipStatus.DECLINED_STATUS:
 			return 'Вам отказали'
 		case EMembershipStatus.KICKED_STATUS:

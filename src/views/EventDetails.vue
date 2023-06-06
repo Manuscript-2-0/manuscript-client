@@ -79,6 +79,7 @@
 					Команды: {{ eventTeams.length }}
 				</h3>
 
+				<!-- horizontal scroll -->
 				<div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 					<router-link
 						v-for="team in eventTeams"

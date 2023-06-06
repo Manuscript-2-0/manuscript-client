@@ -18,10 +18,37 @@ export default function useFormValidator() {
 		return password === confirmPassword
 	}
 
+	const isLinkValid = (link: string) => {
+		const linkRegex =
+			/^(https?:\/\/)?([\w\.]+)\.([a-z]{2,6}\.?)(\/[\w\.]*)*\/?$/g
+		return linkRegex.test(link)
+	}
+
+	const isDateValid = (date: string) => {
+		const currentDate = new Date()
+		const dateRegex = /^(\d{4})-(\d{2})-(\d{2})$/g
+		const dateArray = dateRegex.exec(date)
+		if (dateArray) {
+			const year = parseInt(dateArray[1])
+			const month = parseInt(dateArray[2])
+			const day = parseInt(dateArray[3])
+			if (
+				year < currentDate.getFullYear() ||
+				month < currentDate.getMonth() ||
+				day < currentDate.getDate()
+			) {
+				return false
+			}
+		}
+		return true
+	}
+
 	return {
 		isPhoneValid,
 		isEmailValid,
 		isPasswordValid,
-		isMatchingPasswords
+		isMatchingPasswords,
+		isLinkValid,
+		isDateValid
 	}
 }

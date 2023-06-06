@@ -70,23 +70,28 @@
 			</div>
 		</div>
 
-		<!-- Список постов пользователя -->
-		<div class="w-3/4 h-96"></div>
+		<div class="w-3/4 h-96">
+			<template v-for="item in faqList" :key="item.question">
+				<UiFAQ class="mt-2 first:mt-0" :faq="item" />
+			</template>
+		</div>
 	</section>
 </template>
 
 <script lang="ts">
 import UiActionBlock from '@/components/ui/UiActionBlock.vue'
+import UiFAQ from '@/components/ui/UiFAQ.vue'
 import UiLoader from '@/components/ui/UiLoader.vue'
 import { AuthService } from '@/services/auth'
 import { UserService } from '@/services/user'
 import { INotificationPlugin } from '@/utils/plugins/toast'
 import { computed, defineComponent, inject, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { faqList } from '@/utils/constants'
 
 export default defineComponent({
 	name: 'Profile',
-	components: { UiLoader, UiActionBlock },
+	components: { UiLoader, UiActionBlock, UiFAQ },
 	setup() {
 		const router = useRouter()
 		const toast = inject('$notification') as INotificationPlugin
@@ -116,7 +121,8 @@ export default defineComponent({
 		return {
 			profile,
 			copyInviteLink,
-			logout
+			logout,
+			faqList
 		}
 	}
 })

@@ -28,6 +28,8 @@
 						title="Название команды"
 						type="text"
 						placeholder="Введите название команды"
+						:has-error="isFormSubmitted && !team.name"
+						required
 					/>
 
 					<UiInput
@@ -71,6 +73,7 @@ export default defineComponent({
 		const router = useRouter()
 		const teamId = +route.params.id || 0
 		const eventId = +route.params.eventId || 0
+		const isFormSubmitted = ref(false)
 
 		const team = ref<ITeamCreatePayload>({
 			name: '',
@@ -86,6 +89,13 @@ export default defineComponent({
 		}
 
 		const onSubmit = async () => {
+			const isValid = teamId ? teamEdit.value?.name : team.value.name
+
+			if (!isValid) {
+				isFormSubmitted.value = true
+				return
+			}
+
 			if (teamId && teamEdit.value) {
 				try {
 					await TeamsService.editTeamById(teamEdit.value)
@@ -114,7 +124,8 @@ export default defineComponent({
 		return {
 			team: teamId ? teamEdit : team,
 			onSubmit,
-			isEdit: !!teamId
+			isEdit: !!teamId,
+			isFormSubmitted
 		}
 	}
 })

@@ -63,6 +63,11 @@ export default [
 		component: () => import('../views/Notifications.vue')
 	},
 	{
+		path: '/faq',
+		name: 'FAQ',
+		component: () => import('../views/FAQ.vue')
+	},
+	{
 		path: '/profile',
 		name: 'Profile',
 		meta: { middleware: auth },

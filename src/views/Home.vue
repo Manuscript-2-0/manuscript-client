@@ -23,6 +23,7 @@
 				<div class="mt-10">
 					<button
 						class="bg-black text-white text-lg font-medium py-2 px-4 rounded-lg"
+						@click="$router.push('/events')"
 					>
 						Начать
 					</button>

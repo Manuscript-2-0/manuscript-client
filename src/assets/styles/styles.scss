@@ -4,3 +4,16 @@
 
 @import 'fonts/_fonts';
 @import 'base/_base';
+
+.slide-fade {
+	&-enter-active,
+	&-leave-active {
+		transition: all 0.25s ease-out;
+	}
+
+	&-enter-from,
+	&-leave-to {
+		transform: translateY(-20px);
+		opacity: 0;
+	}
+}
