@@ -11,6 +11,7 @@
 
 			<form
 				class="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+				novalidate
 				@submit.prevent="onSubmit"
 			>
 				<div>
@@ -18,9 +19,13 @@
 						v-model="user.email"
 						title="Email"
 						placeholder="Введите email"
-						type="email"
+						:has-error="!isEmailValid && isFormSubmitted"
 						required
-					/>
+					>
+						<template v-if="!isEmailValid" #error>
+							<div>Неверный формат email</div>
+						</template>
+					</UiInput>
 				</div>
 
 				<div>
@@ -28,7 +33,6 @@
 						v-model="user.first_name"
 						title="Имя"
 						placeholder="Введите имя"
-						type="text"
 						required
 					/>
 				</div>
@@ -38,7 +42,6 @@
 						v-model="user.last_name"
 						title="Фамилия"
 						placeholder="Введите фамилию"
-						type="text"
 						required
 					/>
 				</div>
@@ -48,8 +51,12 @@
 						v-model="user.phone_number"
 						title="Номер телефона"
 						placeholder="Введите номер телефона"
-						type="tel"
-					/>
+						:has-error="!isPhoneValid && isFormSubmitted"
+					>
+						<template v-if="!isPhoneValid" #error>
+							<div>Неверный формат номера телефона</div>
+						</template>
+					</UiInput>
 				</div>
 
 				<div>
@@ -68,15 +75,19 @@
 						title="Подтверждение пароля"
 						placeholder="Подтвердите пароль"
 						type="password"
+						:has-error="!!user.confirm_password.length && !isMatchingPasswords"
 						required
-					/>
+					>
+						<template v-if="!isMatchingPasswords" #error>
+							<div>Пароли не совпадают</div>
+						</template>
+					</UiInput>
 				</div>
 
 				<div>
 					<UiTextarea
 						v-model="user.description"
 						placeholder="Расскажите про себя"
-						required
 					/>
 				</div>
 
@@ -99,19 +110,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref } from 'vue'
+import { defineComponent, inject, onMounted, ref, computed } from 'vue'
 import UiInput from '@/components/ui/UiInput.vue'
 import { AuthService } from '@/services/auth'
 import { useRouter } from 'vue-router'
 import { ISignupPayload } from '@/types'
 import UiTextarea from '@/components/ui/UiTextarea.vue'
 import { INotificationPlugin } from '@/utils/plugins/toast'
+import { useFormValidator } from '@/utils/composables'
 
 export default defineComponent({
 	name: 'AuthPage',
 	components: { UiInput, UiTextarea },
 	setup() {
 		const router = useRouter()
+		const { isEmailValid, isMatchingPasswords, isPhoneValid, isPasswordValid } =
+			useFormValidator()
 		const user = ref<ISignupPayload>({
 			email: '',
 			first_name: '',
@@ -123,9 +137,24 @@ export default defineComponent({
 		})
 
 		const toast = inject('$notification') as INotificationPlugin
+		const isFormSubmitted = ref(false)
+
+		const isFormValid = () => {
+			return (
+				isEmailValid(user.value.email) &&
+				isPhoneValid(user.value.phone_number) &&
+				isPasswordValid(user.value.password) &&
+				isMatchingPasswords(user.value.password, user.value.confirm_password)
+			)
+		}
 
 		const onSubmit = async () => {
 			try {
+				if (!isFormValid()) {
+					isFormSubmitted.value = true
+
+					return
+				}
 				await AuthService.signupUser(user.value)
 				toast.success('Вы успешно зарегистрировались')
 				router.push({ name: 'Profile' })
@@ -142,7 +171,15 @@ export default defineComponent({
 
 		return {
 			user,
-			onSubmit
+			onSubmit,
+			isFormValid,
+			isEmailValid: computed(() => isEmailValid(user.value.email)),
+			isPhoneValid: computed(() => isPhoneValid(user.value.phone_number)),
+			isPasswordValid: computed(() => isPasswordValid(user.value.password)),
+			isMatchingPasswords: computed(() =>
+				isMatchingPasswords(user.value.password, user.value.confirm_password)
+			),
+			isFormSubmitted
 		}
 	}
 })

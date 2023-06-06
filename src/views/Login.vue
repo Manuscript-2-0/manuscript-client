@@ -9,6 +9,7 @@
 
 			<form
 				class="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+				novalidate
 				@submit.prevent="onSubmit"
 			>
 				<div>
@@ -16,9 +17,13 @@
 						v-model="email"
 						title="Email"
 						placeholder="Введите email"
-						type="email"
 						required
-					/>
+						:has-error="!isEmailValid && isFormSubmitted"
+					>
+						<template v-if="!isEmailValid" #error>
+							<div>Неверный формат email</div>
+						</template>
+					</UiInput>
 				</div>
 
 				<div>
@@ -50,24 +55,33 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref } from 'vue'
+import { defineComponent, inject, onMounted, ref, computed } from 'vue'
 import UiInput from '@/components/ui/UiInput.vue'
 import { AuthService } from '@/services/auth'
 import { useRouter } from 'vue-router'
 import { INotificationPlugin } from '@/utils/plugins/toast'
+import { useFormValidator } from '@/utils/composables'
 
 export default defineComponent({
 	name: 'AuthPage',
 	components: { UiInput },
 	setup() {
 		const router = useRouter()
+		const { isEmailValid } = useFormValidator()
 
 		const toast = inject('$notification') as INotificationPlugin
 
 		const email = ref('')
 		const password = ref('')
 
+		const isFormSubmitted = ref(false)
+
 		const onSubmit = async () => {
+			if (!isEmailValid(email.value) || !password.value.length) {
+				isFormSubmitted.value = true
+				return
+			}
+
 			try {
 				await AuthService.loginUser(email.value, password.value)
 
@@ -88,6 +102,8 @@ export default defineComponent({
 		return {
 			email,
 			password,
+			isFormSubmitted,
+			isEmailValid: computed(() => isEmailValid(email.value)),
 			onSubmit
 		}
 	}

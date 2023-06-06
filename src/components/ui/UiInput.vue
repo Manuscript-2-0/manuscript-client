@@ -3,8 +3,8 @@
 		<div
 			class="input-field rounded-xl bg-gray-100 relative border border-transparent w-full"
 			:class="{
-				'border-red-error': hasError,
-				'border-blue border': isFocused
+				'border-red-400': hasError,
+				'border-blue-500 border': isFocused
 			}"
 		>
 			<label
