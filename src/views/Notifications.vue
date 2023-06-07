@@ -11,14 +11,17 @@
 		</UiActionBlock>
 
 		<section
-			v-if="notifications.length"
 			class="flex flex-col mt-4 rounded-xl bg-gray-100 p-4 sm:p-6 lg:p-8"
 		>
 			<h1 class="text-2xl font-semibold text-gray-800 mb-4">
 				Уведомления ({{ notifications.length }})
 			</h1>
 
-			<template v-for="notification in notifications" :key="notification.id">
+			<template
+				v-if="notifications.length"
+				v-for="notification in notifications"
+				:key="notification.id"
+			>
 				<div class="flex items-center justify-between p-4 bg-gray-100">
 					<div class="flex items-center">
 						<div class="text-gray-500 flex flex-col">
@@ -45,6 +48,11 @@
 					>
 						{{ formattedStatusText(notification.status) }}
 					</div>
+				</div>
+			</template>
+			<template v-else>
+				<div class="text-gray-500 text-center py-10">
+					У вас пока нет уведомлений
 				</div>
 			</template>
 		</section>
