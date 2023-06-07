@@ -41,7 +41,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, Component, onMounted, onUnmounted } from 'vue'
+import {
+	defineComponent,
+	Component,
+	onMounted,
+	onUnmounted,
+	computed
+} from 'vue'
 import { RouteRecordName, useRoute, useRouter } from 'vue-router'
 import { EventsIcon, FAQIcon, NotificationsIcon, TeamIcon } from './icons'
 import ProfileIcon from './icons/ProfileIcon.vue'
@@ -72,7 +78,7 @@ export default defineComponent({
 		 */
 		const changeRoute = (name: string) => router.push({ name })
 
-		const navigationItems: INavigationItem[] = [
+		const navigationItems = (): INavigationItem[] => [
 			{
 				name: 'Events',
 				text: 'События',
@@ -100,7 +106,7 @@ export default defineComponent({
 			{
 				name: 'Profile',
 				text: 'Профиль',
-				show: AuthService.isAuthorized(),
+				show: !!AuthService.state.token,
 				icon: ProfileIcon,
 				isActive: () => areRoutesActive(['Profile']),
 				onClick: () => changeRoute('Profile')
@@ -139,7 +145,9 @@ export default defineComponent({
 
 		onUnmounted(() => window.removeEventListener('scroll', () => {}))
 
-		return { navigationItems }
+		return {
+			navigationItems: computed(() => navigationItems())
+		}
 	}
 })
 </script>

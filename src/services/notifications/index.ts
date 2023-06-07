@@ -8,7 +8,10 @@ const state = reactive<IState>({
 })
 
 const fetchNotifications = async (): Promise<INotification[]> => {
-	return await getNotifications()
+	const notifications = await getNotifications()
+	const reversedNotifications = notifications.reverse()
+	state.notifications = reversedNotifications
+	return notifications
 }
 
 const NotificationsService: INotificationsService = {

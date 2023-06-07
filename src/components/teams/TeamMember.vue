@@ -18,7 +18,7 @@
 			<button
 				v-if="isDeletable && !isRequests"
 				class="bg-red-700 hover:bg-black text-white font-bold py-2 px-4 rounded"
-				@click="$emit('delete-member', member.user.id)"
+				@click="$emit('delete-member', member.id)"
 			>
 				Удалить
 			</button>

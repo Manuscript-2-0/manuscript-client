@@ -36,6 +36,7 @@ export default defineComponent({
 	setup() {
 		const openTelegram = () => {
 			window.open('https://t.me/manuscriphelp', '_blank')
+			// window.open('https://t.me/manu_admin_bot', '_blank')
 		}
 
 		return {
