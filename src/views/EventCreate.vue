@@ -1,5 +1,5 @@
 <template>
-	<form class="px-10" novalidate>
+	<form class="px-10" novalidate @submit.prevent="onSubmit">
 		<div class="flex flex-col justify-center items-center px-4 py-2">
 			<div class="flex flex-col justify-center items-center">
 				<h1 v-if="!isEdit" class="text-3xl font-bold text-gray-800">
@@ -111,7 +111,6 @@
 				<div class="mt-10">
 					<button
 						class="bg-black text-white font-bold py-3 px-6 rounded-lg text-xl"
-						@click="onSubmit"
 					>
 						<template v-if="!isEdit"> Создать </template>
 						<template v-else> Сохранить </template>
